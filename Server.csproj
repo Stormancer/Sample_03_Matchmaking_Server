@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0812BA0F-B49E-4D16-A136-5985D884966B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Windjammers</RootNamespace>
+    <AssemblyName>Windjammers</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Elasticsearch.Net">
+      <HintPath>bin\Elasticsearch.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="LZ4">
+      <HintPath>bin\LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Host.HttpListener.3.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MsgPack, Version=0.6.0.0, Culture=neutral, PublicKeyToken=a2625990d5dc0167, processorArchitecture=MSIL">
+      <HintPath>packages\MsgPack.Cli.0.6.8\lib\net45\MsgPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest">
+      <HintPath>bin\Nest.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Stormancer.Core, Version=1.3.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Stormancer.Core.1.3.0.6\lib\net45\Stormancer.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Stormancer.Management.Client">
+      <HintPath>bin\Stormancer.Management.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Stormancer.Server, Version=1.6.2.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Stormancer.Server.1.6.2.3\lib\net45\Stormancer.Server.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Owin.5.2.3\lib\net45\System.Web.Http.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Tracing, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Tracing.5.2.3\lib\net45\System.Web.Http.Tracing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.cs" />
+    <Compile Include="AsyncLock.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Matchmaking\DataExtractor.cs" />
+    <Compile Include="Matchmaking\Dto\MatchmakingRequest.cs" />
+    <Compile Include="Matchmaking\Dto\MatchmakingResponse.cs" />
+    <Compile Include="Matchmaking\Matchmaker.cs" />
+    <Compile Include="Matchmaking\MatchmakingResolver.cs" />
+    <Compile Include="Matchmaking\Models\MatchData.cs" />
+    <Compile Include="Matchmaking\Models\MatchmakingData.cs" />
+    <Compile Include="Matchmaking\RulesService.cs" />
+    <Compile Include="Plugins\AdminApi\AdminApiPlugin.cs" />
+    <Compile Include="Plugins\AdminApi\App.cs" />
+    <Compile Include="Plugins\AdminApi\IAdminWebApiConfig.cs" />
+    <Compile Include="Plugins\Analytics\AnalyticsController.cs" />
+    <Compile Include="Plugins\Analytics\AnalyticsExtensions.cs" />
+    <Compile Include="Plugins\Analytics\AnalyticsPlugin.cs" />
+    <Compile Include="Plugins\Analytics\AnalyticsService.cs" />
+    <Compile Include="Plugins\Analytics\App.cs" />
+    <Compile Include="Plugins\API\ApiExceptionContext.cs" />
+    <Compile Include="Plugins\API\ApiPlugin.cs" />
+    <Compile Include="Plugins\API\ApiPluginExtensions.cs" />
+    <Compile Include="Plugins\API\ControllerBase.cs" />
+    <Compile Include="Plugins\API\ControllerHelper.cs" />
+    <Compile Include="Plugins\API\IControllerFactory.cs" />
+    <Compile Include="Plugins\Chat\App.cs" />
+    <Compile Include="Plugins\Chat\ChatPlugin.cs" />
+    <Compile Include="Plugins\Chat\ChatPluginExtensions.cs" />
+    <Compile Include="Plugins\Chat\ChatServer.cs" />
+    <Compile Include="Plugins\ClientLogs\App.cs" />
+    <Compile Include="Plugins\ClientLogs\ClientLogsExtensions.cs" />
+    <Compile Include="Plugins\ClientLogs\ClientLogsPlugin.cs" />
+    <Compile Include="Plugins\ClientLogs\LogPushDto.cs" />
+    <Compile Include="Plugins\ClientLogs\LogsController.cs" />
+    <Compile Include="Plugins\Configuration\ConfigurationManagerPlugin.cs" />
+    <Compile Include="Plugins\Configuration\ConfigurationService.cs" />
+    <Compile Include="Plugins\Configuration\IConfiguration.cs" />
+    <Compile Include="Plugins\Configuration\IConfigurationRefresh.cs" />
+    <Compile Include="Plugins\Database\AuthenticatedHttpClientHandler.cs" />
+    <Compile Include="Plugins\Database\ESClientFactory.cs" />
+    <Compile Include="Plugins\Database\IIndex.cs" />
+    <Compile Include="Plugins\Database\IndexExtensions.cs" />
+    <Compile Include="Plugins\GameSession\GameServerStartMessage.cs" />
+    <Compile Include="Plugins\GameSession\GameSessionConfiguration.cs" />
+    <Compile Include="Plugins\GameSession\GameSessionController.cs" />
+    <Compile Include="Plugins\GameSession\GameSessionService.cs" />
+    <Compile Include="Plugins\GameSession\IGameSessionEventHandler.cs" />
+    <Compile Include="Plugins\GameSession\IGameSessionService.cs" />
+    <Compile Include="Plugins\GameSession\GameSessionsExtensions.cs" />
+    <Compile Include="Plugins\GameVersion\App.cs" />
+    <Compile Include="Plugins\GameVersion\GameVersionExtensions.cs" />
+    <Compile Include="Plugins\GameVersion\GameVersionPlugin.cs" />
+    <Compile Include="Plugins\GameSession\App.cs" />
+    <Compile Include="Plugins\GameSession\GameSessionPlugin.cs" />
+    <Compile Include="Plugins\Leaderboards\App.cs" />
+    <Compile Include="Plugins\Leaderboards\ILeaderboardService.cs" />
+    <Compile Include="Plugins\Leaderboards\LeaderboardController.cs" />
+    <Compile Include="Plugins\Leaderboards\LeaderboardExtensions.cs" />
+    <Compile Include="Plugins\Leaderboards\LeaderboardPlugin.cs" />
+    <Compile Include="Plugins\Leaderboards\LeaderboardRequest.cs" />
+    <Compile Include="Plugins\Leaderboards\LeaderboardService.cs" />
+    <Compile Include="Plugins\Leaderboards\Score.cs" />
+    <Compile Include="Plugins\Notifications\App.cs" />
+    <Compile Include="Plugins\Notifications\EmailNotificationProvider.cs" />
+    <Compile Include="Plugins\Notifications\INotificationChannel.cs" />
+    <Compile Include="Plugins\Notifications\INotificationProvider.cs" />
+    <Compile Include="Plugins\Management\ManagementPlugin.cs" />
+    <Compile Include="Plugins\Matchmaking\App.cs" />
+    <Compile Include="Plugins\Matchmaking\Default\DefaultMatchmaker.cs" />
+    <Compile Include="Plugins\Matchmaking\Default\DefaultMatchmakingResolver.cs" />
+    <Compile Include="Plugins\Matchmaking\IMatchmakingService.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchmaker.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchmakingContext.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchmakingDataExtractor.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchmakingResolutionWriterContext.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchMakingResolver.cs" />
+    <Compile Include="Plugins\Matchmaking\Interfaces\IMatchResolverContext.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingConfig.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingPeerService.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingPlugin.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingService.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingServiceExtensions.cs" />
+    <Compile Include="Plugins\Matchmaking\MatchmakingStatusUpdate.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\Group.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\Match.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\MatchmakingResult.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\MatchReadyCheckState.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\Player.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\ReadyVerificationRequest.cs" />
+    <Compile Include="Plugins\Matchmaking\Models\Team.cs" />
+    <Compile Include="Plugins\Messaging\App.cs" />
+    <Compile Include="Plugins\Messaging\MessagingController.cs" />
+    <Compile Include="Plugins\Messaging\PeerMessagingExtensions.cs" />
+    <Compile Include="Plugins\Messaging\PeerMessagingPlugin.cs" />
+    <Compile Include="Plugins\Nat\App.cs" />
+    <Compile Include="Plugins\Nat\NatController.cs" />
+    <Compile Include="Plugins\Nat\NatPunchthroughExtensions.cs" />
+    <Compile Include="Plugins\Nat\NatPunchthroughPlugin.cs" />
+    <Compile Include="Plugins\Notifications\NotificationPlugin.cs" />
+    <Compile Include="Plugins\PSN\IPSNService.cs" />
+    <Compile Include="Plugins\PSN\PSNService.cs" />
+    <Compile Include="Plugins\Serials\AdminWebApiConfig.cs" />
+    <Compile Include="Plugins\Serials\App.cs" />
+    <Compile Include="Plugins\Serials\ISerialService.cs" />
+    <Compile Include="Plugins\Serials\SerialsAdminController.cs" />
+    <Compile Include="Plugins\Serials\SerialsController.cs" />
+    <Compile Include="Plugins\Serials\SerialsExtensions.cs" />
+    <Compile Include="Plugins\Serials\SerialsPlugin.cs" />
+    <Compile Include="Plugins\Serials\Serial.cs" />
+    <Compile Include="Plugins\Serials\SerialsService.cs" />
+    <Compile Include="Plugins\Steam\ISteamService.cs" />
+    <Compile Include="Plugins\Steam\Models\SteamAuthenticationResponse.cs" />
+    <Compile Include="Plugins\Steam\Models\SteamPlayerSummary.cs" />
+    <Compile Include="Plugins\Steam\SteamPlugin.cs" />
+    <Compile Include="Plugins\Steam\SteamService.cs" />
+    <Compile Include="Plugins\Users\AdminImpersonationAuthenticationProvider.cs" />
+    <Compile Include="Plugins\Users\AdminWebApiConfig.cs" />
+    <Compile Include="Plugins\Users\AuthenticatorResult.cs" />
+    <Compile Include="Plugins\Users\GroupController.cs" />
+    <Compile Include="Plugins\Users\IActionStore.cs" />
+    <Compile Include="Plugins\Users\IAuthenticationProvider.cs" />
+    <Compile Include="Plugins\Users\ISteamUserTicketAuthenticator.cs" />
+    <Compile Include="Plugins\Users\IUserEventHandler.cs" />
+    <Compile Include="Plugins\Users\IUserService.cs" />
+    <Compile Include="Plugins\Users\IUserSessionEventHandler.cs" />
+    <Compile Include="Plugins\Users\IUserSessions.cs" />
+    <Compile Include="Plugins\Users\LoginPasswordAuthenticationProvider.cs" />
+    <Compile Include="Plugins\Users\LoginResult.cs" />
+    <Compile Include="Plugins\PSN\PSNAuthenticationProvider.cs" />
+    <Compile Include="Plugins\Users\SceneAuthorizationController.cs" />
+    <Compile Include="Plugins\Users\SteamAuthenticationProvider.cs" />
+    <Compile Include="Plugins\Users\SteamUserTicketAuthenticator.cs" />
+    <Compile Include="Plugins\Users\SteamUserTicketAuthenticatorMockup.cs" />
+    <Compile Include="Plugins\Users\User.cs" />
+    <Compile Include="Plugins\Users\UserExtensions.cs" />
+    <Compile Include="Plugins\Users\UserManagementConfig.cs" />
+    <Compile Include="Plugins\Users\UsersAdminController.cs" />
+    <Compile Include="Plugins\Users\UserService.cs" />
+    <Compile Include="Plugins\Users\UserSessions.cs" />
+    <Compile Include="Plugins\Users\UsersManagementPlugin.cs" />
+    <Compile Include="Plugins\Utils\EventHandlingExtensions.cs" />
+    <Compile Include="Profiles\Dto\PlayerRanking.cs" />
+    <Compile Include="Profiles\IProfileService.cs" />
+    <Compile Include="Profiles\Models\League.cs" />
+    <Compile Include="Profiles\Models\PlayerProfile.cs" />
+    <Compile Include="Profiles\ProfilesConfiguration.cs" />
+    <Compile Include="Profiles\ProfilesController.cs" />
+    <Compile Include="Profiles\ProfileService.cs" />
+    <Compile Include="Profiles\ProfilesPlugin.cs" />
+    <Compile Include="Profiles\ProfilesUserEventHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Admin\serials\keys-list.template.html" />
+    <Content Include="Assets\Admin\users\App.js" />
+    <Content Include="Assets\Admin\users\Index.html" />
+    <Content Include="Assets\Admin\users\users-list.component.js" />
+    <Content Include="Assets\Admin\users\users-list.template.html" />
+    <None Include="packages.config" />
+    <None Include="Plugins\AdminApi\_references.json" />
+    <None Include="Plugins\Database\_references.json" />
+    <None Include="Plugins\Management\_references.json" />
+    <None Include="Plugins\Users\_references.json" />
+    <None Include="Profiles\_references.json" />
+    <None Include="_app.json" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\Admin\serials\Index.html" />
+    <Content Include="Assets\Admin\serials\App.js" />
+    <Content Include="Assets\Admin\serials\keys-list.component.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
