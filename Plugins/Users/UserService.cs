@@ -206,7 +206,7 @@ namespace Server.Users
 
         }
 
-        public Task LogoutEventOccured(User user, IScenePeerClient peer)
+        public Task LogoutEventOccured(User user, long peerId)
         {
            
             return Task.FromResult(true);

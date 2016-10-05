@@ -46,7 +46,7 @@ namespace Server.Plugins.API
             }
         }
 
-        private void ExecuteRouteAction(Packet<IScenePeerClient> packet, Action<T, Packet<IScenePeerClient>> action, string route)
+        private async Task ExecuteRouteAction(Packet<IScenePeerClient> packet, Func<T, Packet<IScenePeerClient>, Task> action, string route)
         {
             using (var scope = _scene.DependencyResolver.CreateChild("request"))
             {
@@ -55,20 +55,21 @@ namespace Server.Plugins.API
 
                 try
                 {
-                    action(controller, packet);
+                    await action(controller, packet);
                 }
                 catch (Exception ex)
                 {
-                    controller.HandleException(new ApiExceptionContext(route, ex, packet)).ContinueWith(task =>
+                    try
                     {
-                        if (!task.IsFaulted && !task.IsCanceled)
+                        if (!await controller.HandleException(new ApiExceptionContext(route, ex, packet)))
                         {
-                            if(!task.Result)
-                            {
-                                scope.Resolve<ILogger>().Log(LogLevel.Error, route, $"An exception occurred while executing action '{route}' in controller '{controller.GetType().Name}'.", ex);
-                            }
+                            scope.Resolve<ILogger>().Log(LogLevel.Error, route, $"An exception occurred while executing action '{route}' in controller '{controller.GetType().Name}'.", ex);
                         }
-                    });
+                    }
+                    catch (Exception)
+                    {
+                        return;
+                    }
                 }
             }
         }
@@ -96,8 +97,8 @@ namespace Server.Plugins.API
                     var controllerParam = Expression.Parameter(typeof(T), "controller");
                     var callExpr = Expression.Call(controllerParam, method, ctxParam);
 
-                    var action = Expression.Lambda<Action<T, Packet<IScenePeerClient>>>(callExpr, controllerParam, ctxParam).Compile();
-                    _scene.AddRoute(procedureName, packet => ExecuteRouteAction(packet, action, procedureName));
+                    var action = Expression.Lambda<Func<T, Packet<IScenePeerClient>, Task>>(callExpr, controllerParam, ctxParam).Compile();
+                    _scene.AddRoute(procedureName, packet => ExecuteRouteAction(packet, action, procedureName), _ => _);
                 }
             }
 

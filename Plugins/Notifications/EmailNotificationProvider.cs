@@ -56,7 +56,7 @@ namespace Server.Plugins.Notification
 
                 var email = data.email;
 
-                await client.SendMailAsync("server@Sample.com", email, "[Sample]Password reset request", PasswordResetBody + data.code);
+                await client.SendMailAsync("server@Battlecrew.com", email, "[Battlecrew]Password reset request", PasswordResetBody + data.code);
 
                 _logger.Debug("notifications.email", $"Send password reset request email to {data.email}");
                 return true;

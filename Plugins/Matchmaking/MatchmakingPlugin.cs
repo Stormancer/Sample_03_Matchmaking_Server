@@ -58,8 +58,8 @@ namespace Stormancer.Matchmaking
 
                     scene.Disconnected.Add(args => matchmakingService.CancelMatch(args.Peer));
                     scene.AddProcedure("match.find", matchmakingService.FindMatch);
-                    scene.AddRoute("match.ready.resolve", matchmakingService.ResolveReadyRequest);
-                    scene.AddRoute("match.cancel", matchmakingService.CancelMatch);
+                    scene.AddRoute("match.ready.resolve", matchmakingService.ResolveReadyRequest, _ => _);
+                    scene.AddRoute("match.cancel", matchmakingService.CancelMatch, _ => _);
 
                     //Start matchmaking
                     scene.RunTask(matchmakingService.Run);

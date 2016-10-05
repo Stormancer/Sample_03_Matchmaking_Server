@@ -17,10 +17,12 @@ namespace Server.Users
         Task<User> GetUserByClaim(string provider, string claimPath, string login);
         Task<User> CreateUser(string uid, JObject userData);
         Task LoginEventOccured(User user, IScenePeerClient peer);
-        Task LogoutEventOccured(User user, IScenePeerClient peer);
+        Task LogoutEventOccured(User user, long peerId);
         Task UpdateUserData<T>(string uid, T data);
 
         Task UpdateCommunicationChannel(string userId, string channel, JObject data);
         Task Delete(string id);
+
+
     }
 }

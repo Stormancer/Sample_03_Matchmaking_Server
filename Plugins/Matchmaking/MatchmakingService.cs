@@ -78,6 +78,7 @@ namespace Stormancer.Matchmaking
         {
             _period = TimeSpan.FromSeconds((double)(config.matchmaking.interval));
 
+            AutoCancelTimeout = (int?)config.matchmaking?.autoCancelTimeout ?? 0;
             try
             {
                 var isReadyCheckEnabled = config.matchmaking?.readyCheck?.enabled;
@@ -238,12 +239,27 @@ namespace Stormancer.Matchmaking
         public async Task Run(CancellationToken ct)
         {
             IsRunning = true;
-           
+
             while (!ct.IsCancellationRequested)
             {
                 try
                 {
+
+                    
+
                     await this.MatchOnce();
+
+                    foreach (var group in _waitingGroups.Keys)
+                    {
+                        group.PastIterations++;
+                        if(AutoCancelAfterTimeoutEnabled)
+                        {
+                            if(group.PastIterations > AutoCancelTimeout)
+                            {
+                                CancelFindMatch(group);
+                            }
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
@@ -252,7 +268,7 @@ namespace Stormancer.Matchmaking
                 await Task.Delay(this._period);
             }
             IsRunning = false;
-           
+
         }
 
         private async Task MatchOnce()
@@ -281,7 +297,7 @@ namespace Stormancer.Matchmaking
                     state.State = RequestState.Found;
                     state.Candidate = match;
                 }
-                
+
                 var _ = ResolveMatchFound(match, waitingClients);//Resolve match, but don't wait for completion.
 
 
@@ -293,7 +309,7 @@ namespace Stormancer.Matchmaking
             }
         }
 
-    
+
         private bool IsReadyCheckEnabled
         {
             get; set;
@@ -302,6 +318,21 @@ namespace Stormancer.Matchmaking
         {
             get; set;
         }
+
+        private bool AutoCancelAfterTimeoutEnabled
+        {
+            get
+            {
+                return AutoCancelTimeout > 0;
+            }
+        }
+
+        private int AutoCancelTimeout
+        {
+            get;
+            set;
+        }
+
         private async Task ResolveMatchFound(Match match, Dictionary<Group, MatchmakingRequestState> waitingClients)
         {
             var resolverCtx = new MatchResolverContext(match);
@@ -421,7 +452,7 @@ namespace Stormancer.Matchmaking
                 return null;
             }
         }
-        public async void ResolveReadyRequest(Packet<IScenePeerClient> packet)
+        public async Task ResolveReadyRequest(Packet<IScenePeerClient> packet)
         {
 
             var user = await _sessions.GetUser(packet.Connection);
@@ -446,9 +477,9 @@ namespace Stormancer.Matchmaking
             check.ResolvePlayer(user.Id, accepts);
         }
 
-        public async void CancelMatch(Packet<IScenePeerClient> packet)
+        public Task CancelMatch(Packet<IScenePeerClient> packet)
         {
-            await CancelMatch(packet.Connection);
+            return CancelMatch(packet.Connection);
 
         }
 
@@ -465,6 +496,12 @@ namespace Stormancer.Matchmaking
                 return;
             }
 
+            CancelFindMatch(group);
+
+        }
+
+        private void CancelFindMatch(Group group)
+        {
             MatchmakingRequestState mmrs;
             if (!_waitingGroups.TryGetValue(group, out mmrs))
             {

@@ -225,7 +225,7 @@ namespace Server.Plugins.GameSession
                 {
                     if (verbose)
                     {
-                        _logger.Log(LogLevel.Trace, "gameserver", "Received data output from Sample server.", new { args.Data });
+                        _logger.Log(LogLevel.Trace, "gameserver", "Received data output from Battlecrew server.", new { args.Data });
                     }
                     if (args.Data?.ToLowerInvariant().Contains("server is ready") == true)
                     {

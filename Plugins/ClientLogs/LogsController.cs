@@ -21,7 +21,7 @@ namespace Stormancer.Plugins.ClientLogs
             _logger = logger;
         }
 
-        public void Push(Packet<IScenePeerClient> packet)
+        public Task Push(Packet<IScenePeerClient> packet)
         {
             
             var log = packet.ReadObject<LogPushDto>();
@@ -33,6 +33,7 @@ namespace Stormancer.Plugins.ClientLogs
                 jData["data"] = data;
             }
             _logger.Log(log.Level, log.Category, log.Message, jData);
+            return Task.FromResult(true);
         }
     }
 }

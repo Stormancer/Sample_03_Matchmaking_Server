@@ -13,15 +13,25 @@ namespace Server.Users
     public interface IUserPeerIndex : IIndex<long> { }
     internal class UserPeerIndex : InMemoryIndex<long>, IUserPeerIndex { }
 
-    public interface IPeerUserIndex : IIndex<User> { }
-    internal class PeerUserIndex : InMemoryIndex<User>, IPeerUserIndex { }
 
+
+    public interface IPeerUserIndex : IIndex<Session> { }
+    internal class PeerUserIndex : InMemoryIndex<Session>, IPeerUserIndex { }
+
+    public class Session
+    {
+        public PlatformId platformId { get; set; }
+        public User User { get; set; }
+
+        public Dictionary<string, object> SessionData { get; set; }
+    }
     public class UserSessions : IUserSessions
     {
         private readonly IUserPeerIndex _userPeerIndex;
         private readonly IUserService _userService;
         private readonly IPeerUserIndex _peerUserIndex;
         private readonly IEnumerable<IUserSessionEventHandler> _eventHandlers;
+        private readonly IEnumerable<IAuthenticationProvider> _authProviders;
         private readonly ISceneHost _scene;
         private readonly ILogger logger;
 
@@ -29,28 +39,25 @@ namespace Server.Users
         public UserSessions(IUserService userService,
             IPeerUserIndex peerUserIndex,
             IUserPeerIndex userPeerIndex,
-            IEnumerable<IUserSessionEventHandler> eventHandlers, ISceneHost scene, ILogger logger)
+            IEnumerable<IUserSessionEventHandler> eventHandlers,
+            IEnumerable<IAuthenticationProvider> authProviders,
+            ISceneHost scene, ILogger logger)
         {
             _userService = userService;
             _peerUserIndex = peerUserIndex;
             _userPeerIndex = userPeerIndex;
             _eventHandlers = eventHandlers;
             _scene = scene;
+            _authProviders = authProviders;
+
             this.logger = logger;
         }
 
         public async Task<User> GetUser(IScenePeerClient peer)
         {
-            var result = await _peerUserIndex.TryGet(peer.Id.ToString());
-            if (result.Success)
-            {
+            var session = await GetSession(peer);
 
-                return result.Value;
-            }
-            else
-            {
-                return null;
-            }
+            return session?.User;
         }
 
         public async Task<bool> IsAuthenticated(IScenePeerClient peer)
@@ -58,21 +65,26 @@ namespace Server.Users
             return (await GetUser(peer)) != null;
         }
 
-        public async Task LogOut(IScenePeerClient peer)
+        public Task LogOut(IScenePeerClient peer)
         {
-            var result = await _peerUserIndex.TryRemove(peer.Id.ToString());
-            if (result.Success)
-            {
-                await _userPeerIndex.TryRemove(result.Value.Id);
-                await _eventHandlers.RunEventHandler(h => h.OnLoggedOut(peer, result.Value), ex => logger.Log(LogLevel.Error, "usersessions", "An error occured while running LoggedOut event handlers", ex));
-                await _userService.LogoutEventOccured(result.Value, peer);
-                //logger.Trace("usersessions", $"removed '{result.Value.Id}' (peer : '{peer.Id}') in scene '{_scene.Id}'.");
-            }
 
+            return LogOut(peer.Id);
 
         }
+        private async Task LogOut(long peerId)
+        {
+            var result = await _peerUserIndex.TryRemove(peerId.ToString());
+            if (result.Success)
+            {
+                await _userPeerIndex.TryRemove(result.Value.User.Id);
+                await _userPeerIndex.TryRemove(result.Value.platformId.ToString());
+                await _eventHandlers.RunEventHandler(h => h.OnLoggedOut(peerId, result.Value.User), ex => logger.Log(LogLevel.Error, "usersessions", "An error occured while running LoggedOut event handlers", ex));
+                await _userService.LogoutEventOccured(result.Value.User, peerId);
+                //logger.Trace("usersessions", $"removed '{result.Value.Id}' (peer : '{peer.Id}') in scene '{_scene.Id}'.");
+            }
+        }
 
-        public async Task Login(IScenePeerClient peer, User user, string provider)
+        public async Task Login(IScenePeerClient peer, User user, PlatformId onlineId)
         {
             if (peer == null)
             {
@@ -82,9 +94,25 @@ namespace Server.Users
             {
                 throw new ArgumentNullException("user");
             }
-            await _userPeerIndex.TryAdd(user.Id, peer.Id);
-            await _peerUserIndex.TryAdd(peer.Id.ToString(), user);
-            await _eventHandlers.RunEventHandler(h => h.OnLoggedIn(peer, user, provider), ex => logger.Log(LogLevel.Error, "usersessions", "An error occured while running LoggedIn event handlers", ex));
+
+            bool added = false;
+            while (!added)
+            {
+                var r = await _userPeerIndex.GetOrAdd(user.Id, peer.Id);
+                if (r.Value != peer.Id)
+                {
+                    await LogOut(r.Value);
+                }
+                else
+                {
+                    added = true;
+                }
+            }
+
+
+            await _userPeerIndex.TryAdd(onlineId.ToString(), peer.Id);
+            await _peerUserIndex.TryAdd(peer.Id.ToString(), new Session { User = user, platformId = onlineId });
+            await _eventHandlers.RunEventHandler(h => h.OnLoggedIn(peer, user, onlineId), ex => logger.Log(LogLevel.Error, "usersessions", "An error occured while running LoggedIn event handlers", ex));
             await _userService.LoginEventOccured(user, peer);
             //logger.Trace("usersessions", $"Added '{user.Id}' (peer : '{peer.Id}') in scene '{_scene.Id}'.");
         }
@@ -123,6 +151,55 @@ namespace Server.Users
             else
             {
                 //logger.Trace("usersessions", $"didn't found '{userId}' in userpeer index.");
+                return null;
+            }
+        }
+        public async Task<Session> GetSession(string userId)
+        {
+            var result = await _userPeerIndex.TryGet(userId);
+
+            if (result.Success)
+            {
+                return await GetSession(result.Value);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<PlatformId> GetPlatformId(string userId)
+        {
+            var session = await GetSession(userId);
+
+            if (session != null)
+            {
+                return session.platformId;
+            }
+
+            return new PlatformId { Platform = "unknown", OnlineId = "" };
+        }
+
+        public Task<Session> GetSession(PlatformId id)
+        {
+            return GetSession(id.ToString());
+        }
+
+        public Task<Session> GetSession(IScenePeerClient peer)
+        {
+            return GetSession(peer.Id);
+        }
+
+        public async Task<Session> GetSession(long peerId)
+        {
+            var result = await _peerUserIndex.TryGet(peerId.ToString());
+            if (result.Success)
+            {
+
+                return result.Value;
+            }
+            else
+            {
                 return null;
             }
         }

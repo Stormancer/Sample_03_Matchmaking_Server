@@ -25,8 +25,7 @@ namespace Sample.Server.Matchmaking
         #region Config
 
         #region Constraints
-        private int _minLevelForMediumFleet;
-        private int _minLevelForLargeFleet;
+     
         #endregion
 
         #region Score

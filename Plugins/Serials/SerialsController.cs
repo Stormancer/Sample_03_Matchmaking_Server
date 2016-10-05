@@ -32,9 +32,9 @@ namespace Server.Plugins.Serials
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public async Task Activate(RequestContext<IScenePeerClient> ctx)
+        public  Task Activate(RequestContext<IScenePeerClient> ctx)
         {
-
+            return Task.FromResult(true);
         }
 
         /// <summary>
@@ -42,9 +42,9 @@ namespace Server.Plugins.Serials
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public async Task GetKeys(RequestContext<IScenePeerClient> ctx)
+        public  Task GetKeys(RequestContext<IScenePeerClient> ctx)
         {
-
+            return Task.FromResult(true);
         }
       
     }

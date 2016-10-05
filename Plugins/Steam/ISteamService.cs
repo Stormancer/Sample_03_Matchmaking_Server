@@ -15,5 +15,7 @@ namespace Server.Plugins.Steam
         Task<string> OpenVACSession(string steamId);
         Task CloseVACSession(string steamId, string sessionId);
         Task<bool> RequestVACStatusForUser(string steamId, string sessionId);
+
+        
     }
 }

@@ -70,13 +70,13 @@ namespace Sample.Server.Matchmaking
         }
         #endregion
 
-        public async Task PrepareMatchResolution(MatchmakingResult matchmakingResult)
+        public Task PrepareMatchResolution(MatchmakingResult matchmakingResult)
         {
             //_logger.Log(LogLevel.Trace, "matchmaking.resolver", "Preparing matchmaking resolution.", new { });
 
             if (_useMatchmakerStub)
             {
-                return;
+                return Task.FromResult(true); 
             }
 
             var result = new Dictionary<string, player>();
@@ -111,6 +111,7 @@ namespace Sample.Server.Matchmaking
             {
                 match.CommonCustomData = result;
             }
+            return Task.FromResult(true);
         }
 
         public async Task ResolveMatch(IMatchResolverContext matchCtx)

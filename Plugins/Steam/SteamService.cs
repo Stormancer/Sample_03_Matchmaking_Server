@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using Server.Plugins.Configuration;
 using Newtonsoft.Json.Linq;
+using Server.Users;
 
 namespace Server.Plugins.Steam
 {
@@ -23,9 +24,10 @@ namespace Server.Plugins.Steam
 
         private bool _usemockup;
 
+        
         public SteamService(IConfiguration configuration)
         {
-
+           
             var steamElement = configuration.Settings?.steam;
 
 
@@ -225,5 +227,7 @@ namespace Server.Plugins.Steam
         {
             return (await GetPlayerSummaries(new[] { steamId }))?[steamId];
         }
+
+       
     }
 }

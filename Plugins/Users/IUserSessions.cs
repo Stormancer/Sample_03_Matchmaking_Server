@@ -22,9 +22,27 @@ namespace Server.Users
         /// <returns>A peer instance of null if no peer is currently authenticated with this identity.</returns>
         Task<IScenePeerClient> GetPeer(string userId);
         Task UpdateUserData<T>(IScenePeerClient peer, T data);
-        Task Login(IScenePeerClient peer, User user,string provider);
+        Task Login(IScenePeerClient peer, User user,PlatformId platformId);
         Task<bool> IsAuthenticated(IScenePeerClient peer);
         Task LogOut(IScenePeerClient peer);
 
+        Task<PlatformId> GetPlatformId(string userId);
+
+        Task<Session> GetSession(string userId);
+
+        Task<Session> GetSession(IScenePeerClient peer);
+
+        Task<Session> GetSession(PlatformId platformId);
+
+    }
+
+    public struct PlatformId
+    {
+        public override string ToString()
+        {
+            return Platform + ":" + OnlineId;
+        }
+        public string Platform { get; set; }
+        public string OnlineId { get; set; }
     }
 }

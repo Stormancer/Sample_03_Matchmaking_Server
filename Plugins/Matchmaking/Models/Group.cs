@@ -14,6 +14,8 @@ namespace Stormancer.Matchmaking
 
         public object GroupData { get; set; }
 
+        public int PastIterations { get; set; }
+
         public DateTime CreationTimeUtc { get; } = DateTime.UtcNow;
     }
 }

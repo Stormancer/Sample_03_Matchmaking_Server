@@ -70,8 +70,8 @@
     <Reference Include="Stormancer.Management.Client">
       <HintPath>bin\Stormancer.Management.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Stormancer.Server, Version=1.6.2.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Stormancer.Server.1.6.2.3\lib\net45\Stormancer.Server.dll</HintPath>
+    <Reference Include="Stormancer.Server, Version=1.10.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Stormancer.Server.1.10.1.0\lib\net45\Stormancer.Server.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -216,8 +216,6 @@
     <Compile Include="Plugins\Nat\NatPunchthroughExtensions.cs" />
     <Compile Include="Plugins\Nat\NatPunchthroughPlugin.cs" />
     <Compile Include="Plugins\Notifications\NotificationPlugin.cs" />
-    <Compile Include="Plugins\PSN\IPSNService.cs" />
-    <Compile Include="Plugins\PSN\PSNService.cs" />
     <Compile Include="Plugins\Serials\AdminWebApiConfig.cs" />
     <Compile Include="Plugins\Serials\App.cs" />
     <Compile Include="Plugins\Serials\ISerialService.cs" />
@@ -230,26 +228,25 @@
     <Compile Include="Plugins\Steam\ISteamService.cs" />
     <Compile Include="Plugins\Steam\Models\SteamAuthenticationResponse.cs" />
     <Compile Include="Plugins\Steam\Models\SteamPlayerSummary.cs" />
+    <Compile Include="Plugins\Steam\SteamAuthenticationProvider.cs" />
     <Compile Include="Plugins\Steam\SteamPlugin.cs" />
     <Compile Include="Plugins\Steam\SteamService.cs" />
+    <Compile Include="Plugins\Steam\SteamUserTicketAuthenticator.cs" />
+    <Compile Include="Plugins\Steam\SteamUserTicketAuthenticatorMockup.cs" />
     <Compile Include="Plugins\Users\AdminImpersonationAuthenticationProvider.cs" />
     <Compile Include="Plugins\Users\AdminWebApiConfig.cs" />
     <Compile Include="Plugins\Users\AuthenticatorResult.cs" />
     <Compile Include="Plugins\Users\GroupController.cs" />
     <Compile Include="Plugins\Users\IActionStore.cs" />
     <Compile Include="Plugins\Users\IAuthenticationProvider.cs" />
-    <Compile Include="Plugins\Users\ISteamUserTicketAuthenticator.cs" />
+    <Compile Include="Plugins\Steam\ISteamUserTicketAuthenticator.cs" />
     <Compile Include="Plugins\Users\IUserEventHandler.cs" />
     <Compile Include="Plugins\Users\IUserService.cs" />
     <Compile Include="Plugins\Users\IUserSessionEventHandler.cs" />
     <Compile Include="Plugins\Users\IUserSessions.cs" />
     <Compile Include="Plugins\Users\LoginPasswordAuthenticationProvider.cs" />
     <Compile Include="Plugins\Users\LoginResult.cs" />
-    <Compile Include="Plugins\PSN\PSNAuthenticationProvider.cs" />
     <Compile Include="Plugins\Users\SceneAuthorizationController.cs" />
-    <Compile Include="Plugins\Users\SteamAuthenticationProvider.cs" />
-    <Compile Include="Plugins\Users\SteamUserTicketAuthenticator.cs" />
-    <Compile Include="Plugins\Users\SteamUserTicketAuthenticatorMockup.cs" />
     <Compile Include="Plugins\Users\User.cs" />
     <Compile Include="Plugins\Users\UserExtensions.cs" />
     <Compile Include="Plugins\Users\UserManagementConfig.cs" />
@@ -275,6 +272,7 @@
     <Content Include="Assets\Admin\users\Index.html" />
     <Content Include="Assets\Admin\users\users-list.component.js" />
     <Content Include="Assets\Admin\users\users-list.template.html" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Plugins\AdminApi\_references.json" />
     <None Include="Plugins\Database\_references.json" />

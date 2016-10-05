@@ -12,14 +12,14 @@ namespace Server.Users
         {
         }
 
-        public static AuthenticationResult CreateSuccess(User user, string provider, Dictionary<string, string> context)
+        public static AuthenticationResult CreateSuccess(User user, PlatformId platformId, Dictionary<string, string> context)
         {
-            return new AuthenticationResult { Success = true, AuthenticatedUser = user, Provider = provider, AuthenticationContext = context };
+            return new AuthenticationResult { Success = true, AuthenticatedUser = user, PlatformId = platformId, AuthenticationContext = context };
         }
 
-        public static AuthenticationResult CreateFailure(string reason, string provider, Dictionary<string, string> context)
+        public static AuthenticationResult CreateFailure(string reason, PlatformId platformId, Dictionary<string, string> context)
         {
-            return new AuthenticationResult { Success = false, ReasonMsg = reason, Provider = provider, AuthenticationContext = context };
+            return new AuthenticationResult { Success = false, ReasonMsg = reason, PlatformId = platformId, AuthenticationContext = context };
         }
 
         public bool Success { get; private set; }
@@ -36,7 +36,7 @@ namespace Server.Users
 
         public string ReasonMsg { get; private set; }
 
-        public string Provider { get; private set; }
+        public PlatformId PlatformId { get; private set; }
 
         public string Username
         {

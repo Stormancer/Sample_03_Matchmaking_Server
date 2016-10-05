@@ -35,7 +35,7 @@ namespace Stormancer.Plugins.Chat
         private ConcurrentQueue<ChatMessageDTO> _MessagesCache = new ConcurrentQueue<ChatMessageDTO>();
         private long _NbrMessagesToKeep = 100;
 
-        void OnMessageReceived(Packet<IScenePeerClient> packet)
+        Task OnMessageReceived(Packet<IScenePeerClient> packet)
         {
             var dto = new ChatMessageDTO();
             ChatUserInfo temp;
@@ -53,6 +53,8 @@ namespace Stormancer.Plugins.Chat
             AddMessageToCache(dto);
 
             _scene.Broadcast("chat", dto, PacketPriority.MEDIUM_PRIORITY, PacketReliability.RELIABLE);
+
+            return Task.FromResult(true);
         }
 
         void AddMessageToCache(ChatMessageDTO dto)
@@ -66,7 +68,7 @@ namespace Stormancer.Plugins.Chat
             }
         }
 
-        void OnUpdateInfo(Packet<IScenePeerClient> packet)
+        Task OnUpdateInfo(Packet<IScenePeerClient> packet)
         {
             var info = packet.ReadObject<ChatUserInfo>();
             if (_UsersInfos.ContainsKey(packet.Connection.Id) == true)
@@ -84,6 +86,7 @@ namespace Stormancer.Plugins.Chat
                     clt.Send<ChatUserInfo>("UpdateInfo", info, PacketPriority.MEDIUM_PRIORITY, PacketReliability.RELIABLE);
                 }
             }
+            return Task.FromResult(true);
         }
 
         Task OnConnected(IScenePeerClient client)
@@ -139,8 +142,8 @@ namespace Stormancer.Plugins.Chat
             _scene = scene;
             _env = _scene.GetComponent<IEnvironment>();
             _scene.AddProcedure("GetUsersInfos", OnGetUsersInfos);
-            _scene.AddRoute("UpdateInfo", OnUpdateInfo);
-            _scene.AddRoute("chat", OnMessageReceived);
+            _scene.AddRoute("UpdateInfo", OnUpdateInfo, _=> _);
+            _scene.AddRoute("chat", OnMessageReceived, _ => _);
             _scene.Connected.Add(OnConnected);
             _scene.Disconnected.Add(OnDisconnected);
         }

@@ -72,7 +72,7 @@ namespace Server.Users
                     var result = new LoginResult();
                     var userService = scene.DependencyResolver.Resolve<IUserService>();
                     var userSessions = scene.DependencyResolver.Resolve<IUserSessions>();
-
+                    var handled = false;
                     foreach (var provider in _config.AuthenticationProviders)
                     {
                         var authResult = await provider.Authenticate(authenticationCtx, userService);
@@ -80,7 +80,7 @@ namespace Server.Users
                         {
                             continue;
                         }
-
+                        handled = true;
                         if (authResult.Success)
                         {
                             //scene.GetComponent<ILogger>().Log(LogLevel.Trace, "user.login", "Authentication successful.", authResult);
@@ -90,7 +90,7 @@ namespace Server.Users
                                 await oldPeer.DisconnectFromServer("User connected elsewhere");
                             }
 
-                            await userSessions.Login(p.RemotePeer, authResult.AuthenticatedUser, authResult.Provider);
+                            await userSessions.Login(p.RemotePeer, authResult.AuthenticatedUser, authResult.PlatformId);
 
                             result.Success = true;
                             var client = await accessor.GetApplicationClient();
@@ -108,12 +108,11 @@ namespace Server.Users
                         }
 
                     }
-                    if (!result.Success)
+                    if (!handled)
                     {
-                        if (result.ErrorMsg == null)
-                        {
-                            result.ErrorMsg = "No authentication provider able to handle these credentials were found.";
-                        }
+                        scene.DependencyResolver.Resolve<ILogger>().Log(LogLevel.Error, "UsersManagement.login", "Login failed: provider not found ", authenticationCtx);
+                        result.ErrorMsg = "No authentication provider able to handle these credentials were found.";
+
                     }
 
                     p.SendValue(result);

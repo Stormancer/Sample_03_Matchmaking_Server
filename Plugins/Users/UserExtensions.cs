@@ -9,9 +9,17 @@ namespace Stormancer
 {
     public static class UserExtensions
     {
-        public static ulong GetSteamId(this User user)
+        public static ulong? GetSteamId(this User user)
         {
-            return ulong.Parse(user.UserData["steamid"].ToObject<string>());
+            var steamId = user.UserData["steamid"].ToObject<string>();
+            if (steamId == null)
+            {
+                return null;
+            }
+            else
+            {
+                return ulong.Parse(steamId);
+            }
         }
     }
 }

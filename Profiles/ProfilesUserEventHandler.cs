@@ -63,42 +63,14 @@ namespace Server.Profiles
 
 
 
-        public async Task OnLoggedIn(IScenePeerClient client, User user, string provider)
+        public Task OnLoggedIn(IScenePeerClient client, User user, PlatformId pId)
         {
 
-            switch(provider)
-            {
-                case SteamAuthenticationProvider.PROVIDER_NAME:
-                    {
-                        var playerSummary = await _steam.GetPlayerSummary(user.GetSteamId());
-
-                        var profile = await _profiles.GetProfile(user.Id);
-                        if (profile == null)
-                        {
-                            profile = new PlayerProfile { Id = "profile-" + user.Id, PlayerId = user.Id };
-                        }
-
-                        bool change = false;
-                        if (profile.Name != playerSummary.personaname)
-                        {
-                            change = true;
-                            profile.Name = playerSummary.personaname;
-                        }
-
-                        if (change)
-                        {
-                            await _profiles.UpdateProfile(profile);
-                        }
-                        break;
-                    }
-                //TODO: PSN
-                default:
-                    break;
-            }
+            return Task.FromResult(true);
             
         }
 
-        public Task OnLoggedOut(IScenePeerClient client, User user)
+        public Task OnLoggedOut(long peerId, User user)
         {
             return Task.FromResult(true);
         }

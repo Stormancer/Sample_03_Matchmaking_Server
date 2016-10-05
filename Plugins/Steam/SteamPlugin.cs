@@ -17,6 +17,7 @@ namespace Server.Plugins.Steam
 
         private void RegisterDependencies(IDependencyBuilder builder)
         {
+           
             builder.Register<SteamService>().As<ISteamService>().InstancePerScene();
         }
     }

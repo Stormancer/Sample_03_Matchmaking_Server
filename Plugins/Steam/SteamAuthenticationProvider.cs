@@ -68,9 +68,10 @@ namespace Server.Users
             }
 
             string ticket;
+            var pId = new PlatformId { Platform = PROVIDER_NAME };
             if (!authenticationCtx.TryGetValue("ticket", out ticket) || string.IsNullOrWhiteSpace(ticket))
             {
-                return AuthenticationResult.CreateFailure("Steam session ticket must not be empty.", PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateFailure("Steam session ticket must not be empty.", pId, authenticationCtx);
             }
             try
             {
@@ -78,8 +79,9 @@ namespace Server.Users
 
                 if (!steamId.HasValue)
                 {
-                    return AuthenticationResult.CreateFailure("Invalid steam session ticket.", PROVIDER_NAME, authenticationCtx);
+                    return AuthenticationResult.CreateFailure("Invalid steam session ticket.", pId, authenticationCtx);
                 }
+                pId.OnlineId = steamId.ToString();
 
                 if (_vacEnabled)
                 {
@@ -95,20 +97,20 @@ namespace Server.Users
                     catch (Exception ex)
                     {
                         _logger.Log(LogLevel.Error, "authenticator.steam", $"Failed to start VAC session for {steamId}", ex);
-                        result = AuthenticationResult.CreateFailure($"Failed to start VAC session.", PROVIDER_NAME, authenticationCtx);
+                        result = AuthenticationResult.CreateFailure($"Failed to start VAC session.", pId, authenticationCtx);
                     }
 
                     try
                     {
                         if (!await _steamService.RequestVACStatusForUser(steamId.Value.ToString(), vacSessionId))
                         {
-                            result = AuthenticationResult.CreateFailure($"Connection refused by VAC.", PROVIDER_NAME, authenticationCtx);
+                            result = AuthenticationResult.CreateFailure($"Connection refused by VAC.", pId, authenticationCtx);
                         }
                     }
                     catch (Exception ex)
                     {
                         _logger.Log(LogLevel.Error, "authenticator.steam", $"Failed to check VAC status for  {steamId}", ex);
-                        result = AuthenticationResult.CreateFailure($"Failed to check VAC status for user.", PROVIDER_NAME, authenticationCtx);
+                        result = AuthenticationResult.CreateFailure($"Failed to check VAC status for user.", pId, authenticationCtx);
                     }
 
                     if (result != null)//Failed
@@ -130,12 +132,12 @@ namespace Server.Users
                 }
                 var steamIdString = steamId.GetValueOrDefault().ToString();
                 var user = await userService.GetUserByClaim(PROVIDER_NAME, ClaimPath, steamIdString);
-                var playerSummary  = await _steamService.GetPlayerSummary(steamId.Value);
+                var playerSummary = await _steamService.GetPlayerSummary(steamId.Value);
                 if (user == null)
                 {
                     var uid = Guid.NewGuid().ToString("N");
-                    
-                    user = await userService.CreateUser(uid, JObject.FromObject(new { steamid = steamIdString, pseudo= playerSummary.personaname, avatar = playerSummary.avatarfull }));
+
+                    user = await userService.CreateUser(uid, JObject.FromObject(new { steamid = steamIdString, pseudo = playerSummary.personaname, avatar = playerSummary.avatarfull }));
 
                     var claim = new JObject();
                     claim[ClaimPath] = steamIdString;
@@ -148,26 +150,26 @@ namespace Server.Users
                     await userService.UpdateUserData(user.Id, user.UserData);
                 }
 
-                return AuthenticationResult.CreateSuccess(user, PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateSuccess(user, pId, authenticationCtx);
             }
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Debug, "authenticator.steam", $"Steam authentication failed. Ticket : {ticket}", ex);
-                return AuthenticationResult.CreateFailure($"Invalid steam session ticket.", PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateFailure($"Invalid steam session ticket.", pId, authenticationCtx);
             }
         }
 
-        public Task OnLoggedIn(IScenePeerClient client, User user, string provider)
+        public Task OnLoggedIn(IScenePeerClient client, User user, PlatformId platformId)
         {
             return Task.FromResult(true);
         }
 
-        public async Task OnLoggedOut(IScenePeerClient client, User user)
+        public async Task OnLoggedOut(long clientId, User user)
         {
 
             var steamId = user.GetSteamId();
             string vacSessionId;
-            if (_vacSessions.TryRemove(steamId, out vacSessionId))
+            if (_vacSessions.TryRemove(steamId.Value, out vacSessionId))
             {
                 try
                 {

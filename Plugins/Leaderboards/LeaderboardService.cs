@@ -134,7 +134,7 @@ namespace Server.Plugins.Leaderboard
             {
                 throw new InvalidOperationException($"Failed to compute rank. {rankResult.ServerError.Error.Reason}");
             }
-            return rankResult.Count+1;
+            return rankResult.Count + 1;
         }
 
         public async Task<long> GetTotal(LeaderboardQuery filters, string leaderboardName)
@@ -373,7 +373,7 @@ namespace Server.Plugins.Leaderboard
                 {
                     mustClauses = mustClauses.Concat(rq.FieldFilters.Select<FieldFilter, Func<Nest.QueryContainerDescriptor<ScoreRecord>, Nest.QueryContainer>>(f =>
                     {
-                        return q => q.Term(f.Field, f.Value);
+                        return q => q.Term("document." + f.Field, f.Value);
                     }));
 
                 }

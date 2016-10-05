@@ -279,15 +279,17 @@ namespace Server.Users
 
             string password;
             authenticationCtx.TryGetValue("password", out password);
+
+            var pId = new PlatformId { Platform = PROVIDER_NAME };
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
-                return AuthenticationResult.CreateFailure("Login and password must be non empty.", PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateFailure("Login and password must be non empty.", pId, authenticationCtx);
             }
 
             var user = await _userService.GetUserByClaim(PROVIDER_NAME, "login", login);
             if (user == null)
             {
-                return AuthenticationResult.CreateFailure("No user found that matches the provided login/password.", PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateFailure("No user found that matches the provided login/password.", pId, authenticationCtx);
             }
 
             dynamic authData = user.Auth[PROVIDER_NAME];
@@ -298,12 +300,13 @@ namespace Server.Users
             var candidateHash = HashPassword(password, salt);
             if (hash != candidateHash)
             {
-                return AuthenticationResult.CreateFailure("No user found that matches the provided login/password.", PROVIDER_NAME, authenticationCtx);
+                return AuthenticationResult.CreateFailure("No user found that matches the provided login/password.", pId, authenticationCtx);
             }
 
             await _userService.UpdateCommunicationChannel(user.Id, "email", JObject.FromObject(new { value = (string)authData.email }));
 
-            return AuthenticationResult.CreateSuccess(user, PROVIDER_NAME, authenticationCtx);
+            pId.OnlineId = user.Id;
+            return AuthenticationResult.CreateSuccess(user, pId, authenticationCtx);
         }
 
 
@@ -336,7 +339,7 @@ namespace Server.Users
             return Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password + salt)));
         }
 
-
+     
     }
 
     public class CreateAccountRequest

@@ -13,5 +13,8 @@ namespace Server.Users
         void Initialize(ISceneHost scene);
 
         Task<AuthenticationResult> Authenticate(Dictionary<string, string> authenticationCtx, IUserService userService);
+
+       
+
     }
 }

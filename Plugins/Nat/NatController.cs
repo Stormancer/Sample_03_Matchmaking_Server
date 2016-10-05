@@ -22,14 +22,14 @@ namespace Server.Plugins.Nat
             _index = index;
         }
 
-        public Task OnLoggedIn(IScenePeerClient client, User user,string provider)
+        public Task OnLoggedIn(IScenePeerClient client, User user,PlatformId provider)
         {
             return Task.FromResult(true);
         }
 
-        public Task OnLoggedOut(IScenePeerClient client, User user)
+        public Task OnLoggedOut(long clientId, User user)
         {
-            _index.TryRemove(client.Id.ToString());
+            _index.TryRemove(clientId.ToString());
             return Task.FromResult(true);
         }
     }

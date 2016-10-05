@@ -13,8 +13,8 @@ namespace Stormancer.Matchmaking
         Task Run(CancellationToken ct);
         bool IsRunning { get; }
         Task FindMatch(RequestContext<IScenePeerClient> request);
-        void ResolveReadyRequest(Packet<IScenePeerClient> packet);
-        void CancelMatch(Packet<IScenePeerClient> packet);
+        Task ResolveReadyRequest(Packet<IScenePeerClient> packet);
+        Task CancelMatch(Packet<IScenePeerClient> packet);
         Task CancelMatch(IScenePeerClient peer);
     }
 }

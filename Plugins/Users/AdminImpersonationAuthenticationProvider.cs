@@ -73,14 +73,15 @@ namespace Server.Users
                 return null;
             }
             string secret;
+            var pId = new PlatformId { Platform = Provider_Name };
             if (!authenticationCtx.TryGetValue("secret", out secret) || string.IsNullOrWhiteSpace(secret))
             {
-                return AuthenticationResult.CreateFailure("Missing impersonation secret.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure("Missing impersonation secret.", pId, authenticationCtx);
             }
 
             if (secret != _secret)
             {
-                return AuthenticationResult.CreateFailure("Invalid impersonation secret.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure("Invalid impersonation secret.", pId, authenticationCtx);
             }
 
             string ImpersonatingProvider;
@@ -88,28 +89,29 @@ namespace Server.Users
             string ImpersonatingClaimValue;
             if (!authenticationCtx.TryGetValue("impersonated-provider", out ImpersonatingProvider) || string.IsNullOrWhiteSpace(ImpersonatingProvider))
             {
-                return AuthenticationResult.CreateFailure("'impersonated-provider' must not be empty.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure("'impersonated-provider' must not be empty.", pId, authenticationCtx);
             }
 
             if (!authenticationCtx.TryGetValue("claimPath", out ImpersonatingClaimPath) || string.IsNullOrWhiteSpace(ImpersonatingClaimPath))
             {
-                return AuthenticationResult.CreateFailure("'claimPath' must not be empty.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure("'claimPath' must not be empty.", pId, authenticationCtx);
             }
             if (!authenticationCtx.TryGetValue("claimValue", out ImpersonatingClaimValue) || string.IsNullOrWhiteSpace(ImpersonatingClaimValue))
             {
-                return AuthenticationResult.CreateFailure("'claimValue' must not be empty.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure("'claimValue' must not be empty.", pId, authenticationCtx);
             }
             var user = await userService.GetUserByClaim(ImpersonatingProvider, ImpersonatingClaimPath, ImpersonatingClaimValue);
 
             if (user == null)
             {
-                return AuthenticationResult.CreateFailure($"The user '{ImpersonatingProvider}/{ImpersonatingClaimPath} = {ImpersonatingClaimValue}' does not exist.", Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateFailure($"The user '{ImpersonatingProvider}/{ImpersonatingClaimPath} = {ImpersonatingClaimValue}' does not exist.", pId, authenticationCtx);
             }
             else
             {
-                return AuthenticationResult.CreateSuccess(user, Provider_Name, authenticationCtx);
+                return AuthenticationResult.CreateSuccess(user, new PlatformId { Platform = ImpersonatingProvider, OnlineId = ImpersonatingClaimValue }, authenticationCtx);
             }
         }
-            
+
+      
     }
 }
